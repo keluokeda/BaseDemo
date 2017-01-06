@@ -6,7 +6,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.orhanobut.logger.Logger;
-import com.ufind.baselibrary.fragment.BaseFragment;
+import com.ufind.baselibrary.fragment.BaseDataFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -15,7 +15,7 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class TestFragment extends BaseFragment<TestEntity> {
+public class TestDataFragment extends BaseDataFragment<TestEntity> {
     private ViewHolder mViewHolder;
 
 
@@ -49,15 +49,34 @@ public class TestFragment extends BaseFragment<TestEntity> {
     }
 
     @Override
+    protected boolean needSaveInstance() {
+        return true;
+    }
+
+    @Override
     protected void bindData(TestEntity testEntity) {
         Logger.d(testEntity);
-        mViewHolder.mTv00.setText("size= "+testEntity.getSize());
+        mViewHolder.mTv00.setText("size = "+testEntity.getSize());
         mViewHolder.mTv01.setText(testEntity.getName());
+
     }
 
     @Override
     protected void afterCreateView(Bundle bundle) {
+        super.afterCreateView(bundle);
         mViewHolder = new ViewHolder(getRootView());
+        mViewHolder.mTv00.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showEmptyDataView();
+            }
+        });
+        mViewHolder.mTv01.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showNetErrorView();
+            }
+        });
     }
 
     @Override

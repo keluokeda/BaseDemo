@@ -2,9 +2,7 @@ package com.ufind.baselibrary.fragment;
 
 
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.IdRes;
-import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -12,154 +10,138 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-import com.orhanobut.logger.Logger;
 import com.ufind.baselibrary.R;
 
-import cn.bingoogolapple.refreshlayout.BGANormalRefreshViewHolder;
-import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
-import rx.Observable;
-import rx.Observer;
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 
-public abstract class BaseFragment<T> extends Fragment implements BGARefreshLayout.BGARefreshLayoutDelegate {
-    private BGARefreshLayout mBGARefreshLayout;
-    private FrameLayout mFrameLayout;
-    private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
+public abstract class BaseFragment extends Fragment {
+    private final CompositeSubscription mCompositeSubscription = new CompositeSubscription();
+    private View emptyDataView;
+    private View netErrorView;
+    private View customErrorView;
 
-    protected View getRootView() {
-        return mBGARefreshLayout;
-    }
+    private FrameLayout mRootView;
 
-    public View findViewById(@IdRes int id) {
-        return mBGARefreshLayout.findViewById(id);
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        beforeCreateView(savedInstanceState);
-
-        mBGARefreshLayout = (BGARefreshLayout) inflater.inflate(R.layout.fragment_base, container, false);
-        mFrameLayout = (FrameLayout) findViewById(R.id.frame_layout);
-
-        mBGARefreshLayout.setDelegate(this);
-        mBGARefreshLayout.setPullDownRefreshEnable(pullToRefreshEnable());
-        mBGARefreshLayout.setRefreshViewHolder(new BGANormalRefreshViewHolder(getActivity().getApplicationContext(), loadingMoreEnable()));
-
-        mFrameLayout.addView(View.inflate(getActivity(), getLayoutId(), null), ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-
-        if (refreshWhenCreateView()) {
-            beginRefresh();
-        }
-
-        afterCreateView(savedInstanceState);
-        return mBGARefreshLayout;
-    }
-
-    /**
-     * 开始刷新
-     */
-    protected void beginRefresh() {
-        mBGARefreshLayout.beginRefreshing();
-    }
-
-    /**
-     * 停止刷新
-     */
-    protected void endRefreshAndLoadMore() {
-        mBGARefreshLayout.endRefreshing();
-        mBGARefreshLayout.endLoadingMore();
-    }
-
-    /**
-     * 是否需要上拉加载
-     */
-    protected boolean loadingMoreEnable() {
-        return false;
-    }
-
-    /**
-     * 是否需要下拉刷新
-     */
-    protected boolean pullToRefreshEnable() {
-        return false;
-    }
-
-
-    /**
-     * 在 onCreateView代码执行之前的回调方法
-     */
-    protected void beforeCreateView(Bundle bundle) {
-
-    }
-
-    /**
-     * 在 onCreateView代码执行之后的回调方法
-     */
-    protected void afterCreateView(Bundle bundle) {
-
-    }
-
-    /**
-     * 获取数据
-     */
-    protected abstract Observable<T> getData();
-
-    /**
-     * 填充数据
-     */
-    protected abstract void bindData(T t);
-
-    /**
-     * 添加一个可以取消的订阅
-     */
-    protected void addSubscription(Subscription subscription) {
+    public void addSubscription(Subscription subscription) {
         mCompositeSubscription.add(subscription);
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mCompositeSubscription.unsubscribe();
+    }
+
+
+    @Nullable
+    @Override
+    public final View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        beforeCreateView(savedInstanceState);
+        mRootView = (FrameLayout) inflater.inflate(R.layout.fragment_base, container, false);
+        View contentView = getContentView();
+        mRootView.addView(contentView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        afterCreateView(savedInstanceState);
+
+
+        return mRootView;
+    }
+
+    public final View findViewById(@IdRes int id) {
+        return mRootView.findViewById(id);
+    }
 
     /**
-     * 在{@link Fragment#onCreateView(LayoutInflater, ViewGroup, Bundle)}的时候是否需要立刻获取数据
+     * 获取 根布局
      */
-    protected boolean refreshWhenCreateView() {
-        return true;
+    public View getRootView() {
+        return mRootView;
     }
-
 
     /**
-     * @return layout id
+     * 创建 view  之前
      */
-    protected abstract
-    @LayoutRes
-    int getLayoutId();
+    protected abstract void beforeCreateView(Bundle bundle);
 
-    @Override
-    public void onBGARefreshLayoutBeginRefreshing(BGARefreshLayout refreshLayout) {
-        Logger.d("begin refresh");
-        Subscription subscription = getData().subscribe(new Observer<T>() {
-            @Override
-            public void onCompleted() {
+    /**
+     * 创建 view 之后
+     */
+    protected abstract void afterCreateView(Bundle bundle);
 
-            }
+    /**
+     * 获取内容 view，该方法只会在{@link Fragment#onCreateView(LayoutInflater, ViewGroup, Bundle)}时候调用一次
+     */
+    protected abstract View getContentView();
 
-            @Override
-            public void onError(Throwable e) {
-                Logger.d(e);
-            }
+    /**
+     * 空数据要展示的view，背景最好不要透明
+     * 此方法只会被调用一次
+     */
+    protected abstract View getEmptyDataView();
 
-            @Override
-            public void onNext(T t) {
-                bindData(t);
-                endRefreshAndLoadMore();
-            }
-        });
-        addSubscription(subscription);
-
+    protected void showEmptyDataView() {
+        if (emptyDataView == null) {
+            emptyDataView = getEmptyDataView();
+        }
+        if (emptyDataView.getParent() != null) {
+            return;
+        }
+        mRootView.addView(emptyDataView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
     }
 
-    @Override
-    public boolean onBGARefreshLayoutBeginLoadingMore(BGARefreshLayout refreshLayout) {
-        return false;
+    protected void hideEmptyDataView() {
+        if (emptyDataView != null && emptyDataView.getParent() != null) {
+            mRootView.removeView(emptyDataView);
+        }
     }
+
+    /**
+     * 网络链接错误时 要展示的view
+     */
+    protected abstract View getNetErrorView();
+
+    protected void showNetErrorView() {
+        if (netErrorView == null) {
+            netErrorView = getNetErrorView();
+        }
+        if (netErrorView.getParent() != null) {
+            return;
+        }
+
+        mRootView.addView(netErrorView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+    }
+
+    protected void hideNetErrorView() {
+        if (netErrorView != null && netErrorView.getParent() != null) {
+            mRootView.removeView(netErrorView);
+        }
+    }
+
+    /**
+     * 展示自定义错误的view
+     */
+    protected abstract View getCustomErrorView();
+
+    protected void showCustomErrorView() {
+        if (customErrorView == null) {
+            customErrorView = getCustomErrorView();
+        }
+        if (customErrorView.getParent() != null) {
+            return;
+        }
+        mRootView.addView(customErrorView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+    }
+
+    protected void hideCustomerrorView() {
+        if (customErrorView != null && customErrorView.getParent() != null) {
+            mRootView.removeView(customErrorView);
+        }
+    }
+
+    /**
+     * 开始刷新视图内容
+     */
+    public abstract void beginRefresh();
+
+
 }
