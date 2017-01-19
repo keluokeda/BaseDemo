@@ -16,6 +16,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void lazylist(View view) {
+        startActivity(new Intent(this,LazyListActivity.class));
     }
 
     public void list(View view) {

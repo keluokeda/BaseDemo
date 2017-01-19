@@ -118,7 +118,7 @@ public abstract class BaseFragment extends Fragment {
     }
 
     /**
-     * 展示自定义错误的view
+     * 自定义错误的view
      */
     protected abstract View getCustomErrorView();
 

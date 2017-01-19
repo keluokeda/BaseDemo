@@ -3,9 +3,7 @@ package com.ufind.baselibrary.fragment;
 
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;

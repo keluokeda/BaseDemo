@@ -3,13 +3,11 @@ package com.ufind.baselibrary.fragment;
 
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.CallSuper;
 import android.support.annotation.LayoutRes;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
@@ -40,45 +38,11 @@ public abstract class BaseListFragment<T extends Parcelable> extends BaseFragmen
     private boolean isMoreData = true;
     private int currentIndex = 1;
 
-//    @Nullable
-//    @Override
-//    public final View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-//        beforeCreateView(savedInstanceState);
-//        if (getCustomLayoutId() != 0) {
-//            rootView = inflater.inflate(getCustomLayoutId(), container, false);
-//            mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-//            mBgaRefresh = (BGARefreshLayout) findViewById(R.id.bga_refresh);
-//        } else {
-//            rootView = inflater.inflate(R.layout.layout_refresh_recycler_view, container, false);
-//
-//        }
-//
-//        initView();
-//        afterCreateView(savedInstanceState);
-//
-//        if (savedInstanceState == null) {
-//            if (refreshWhenCreate()) {
-//                mBgaRefresh.beginRefreshing();
-//            }
-//        } else {
-//            isMoreData = savedInstanceState.getBoolean(FLAG_IS_MORE, true);
-//            currentIndex = savedInstanceState.getInt(FLAG_PAGE_INDEX, 1);
-//            List<T> tList = savedInstanceState.getParcelableArrayList(FLAG_ENTITY_LIST);
-//            if (tList == null && isMoreData) {
-//                //保存数据为空并且可以加载更多
-//                mBgaRefresh.beginRefreshing();
-//            } else if (tList != null) {
-//                addData(tList);
-//            }
-//
-//        }
-//
-//        return rootView;
-//    }
 
     /**
      * 初始化之前
      */
+    @Override
     protected void beforeCreateView(Bundle bundle) {
 
     }
@@ -86,6 +50,8 @@ public abstract class BaseListFragment<T extends Parcelable> extends BaseFragmen
     /**
      * 初始化之后
      */
+    @Override
+    @CallSuper
     protected void afterCreateView(Bundle savedInstanceState) {
 
         initView();
@@ -101,6 +67,7 @@ public abstract class BaseListFragment<T extends Parcelable> extends BaseFragmen
                 //保存数据为空并且可以加载更多
                 mBgaRefresh.beginRefreshing();
             } else if (tList != null) {
+                Logger.d("get data from save instance");
                 addData(tList);
             }
 
