@@ -1,6 +1,5 @@
 package com.ufind.basedemo;
 
-import android.os.Parcelable;
 
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.ufind.baselibrary.fragment.BaseLazyListFragment;
