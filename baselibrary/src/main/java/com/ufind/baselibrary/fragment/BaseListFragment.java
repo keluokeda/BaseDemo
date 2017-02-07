@@ -227,8 +227,10 @@ public abstract class BaseListFragment<T extends Parcelable> extends BaseFragmen
             public void onNext(List<T> ts) {
                 if (ts == null || ts.isEmpty()) {
                     isMoreData = false;
+                    Logger.d("empty data"+ts);
                     if (mTBaseQuickAdapter.getData().isEmpty()) {
                         //如果没有获取到数据并且数据源的数据是空的，就表示没有数据
+                        Logger.d("data source is empty");
                         showEmptyDataView();
                     }
                     return;
