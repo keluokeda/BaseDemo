@@ -36,13 +36,8 @@ public class EntityListFragment extends BaseListFragment<TestEntity> {
 
     @Override
     protected Observable<List<TestEntity>> getDataList(int currentIndex) {
-        List<TestEntity> list = new ArrayList<>(currentIndex);
-        for (int i = 0; i < currentIndex; i++) {
-            TestEntity testEntity=new TestEntity();
-            testEntity.setSize(currentIndex*i);
-            testEntity.setName(UUID.randomUUID().toString());
-            list.add(testEntity);
-        }
+        List<TestEntity> list = new ArrayList<>(0);
+
         return Observable.just(list).delay(1000, TimeUnit.MILLISECONDS).observeOn(AndroidSchedulers.mainThread());
     }
 }

@@ -219,6 +219,7 @@ public abstract class BaseListFragment<T extends Parcelable> extends BaseFragmen
 
             @Override
             public void onError(Throwable e) {
+                Logger.d(e);
                 endRefreshAndLoadMore();
             }
 
