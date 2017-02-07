@@ -4,6 +4,7 @@ package com.ufind.baselibrary.fragment;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.CallSuper;
+import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -120,9 +121,28 @@ public abstract class BaseListFragment<T extends Parcelable> extends BaseFragmen
         super.onSaveInstanceState(outState);
     }
 
+    /**
+     * 如果用的是自定义布局 该方法必须返回自定义布局中的BGARefreshLayout id
+     */
+    protected
+    @IdRes
+    int getCustomBgaRefreshLayoutId() {
+        return 0;
+    }
+
+    /**
+     * 如果用的是自定义布局 该方法必须返回自定义布局中的RecyclerView id
+     */
+    protected
+    @IdRes
+    int getCustomRecyclerViewId() {
+        return 0;
+    }
+
     private void initView() {
-        mBgaRefresh = (BGARefreshLayout) findViewById(R.id.bga_refresh);
-        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        mBgaRefresh = (BGARefreshLayout) findViewById(getCustomLayoutId() == 0 ? R.id.bga_refresh : getCustomBgaRefreshLayoutId());
+        mRecyclerView = (RecyclerView) findViewById(getCustomLayoutId() == 0 ? R.id.recycler_view : getCustomRecyclerViewId());
+
 
         mBgaRefresh.setDelegate(this);
         mBgaRefresh.setPullDownRefreshEnable(pullToRefreshEnable());
