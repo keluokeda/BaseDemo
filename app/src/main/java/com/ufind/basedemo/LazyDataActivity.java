@@ -18,17 +18,17 @@ public class LazyDataActivity extends BaseTestActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lazy_data);
 
-        TabLayout tabLayout= (TabLayout) findViewById(R.id.tab_layout);
-        ViewPager viewPager= (ViewPager) findViewById(R.id.container);
-        int size=3;
-        List<Fragment> fragments=new ArrayList<>(size);
-        List<String> strings=new ArrayList<>(size);
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        ViewPager viewPager = (ViewPager) findViewById(R.id.container);
+        int size = 3;
+        List<Fragment> fragments = new ArrayList<>(size);
+        List<String> strings = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
             fragments.add(new LazyDataFragment());
-            strings.add("index "+i);
+            strings.add("index " + i);
         }
 
-        viewPager.setAdapter(new FragmentAdapter(getSupportFragmentManager(),fragments,strings));
+        viewPager.setAdapter(new FragmentAdapter(getSupportFragmentManager(), fragments, strings));
         tabLayout.setupWithViewPager(viewPager);
         viewPager.setOffscreenPageLimit(size);
     }

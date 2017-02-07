@@ -84,7 +84,7 @@ public abstract class BaseListFragment<T extends Parcelable> extends BaseFragmen
 
     @Override
     protected View getContentView() {
-        return View.inflate(getContext(), R.layout.fragment_base_list, null);
+        return View.inflate(getContext(), getCustomLayoutId() == 0 ? R.layout.fragment_base_list : getCustomLayoutId(), null);
     }
 
     @Override

@@ -41,8 +41,8 @@ public class LazyListFragment extends BaseLazyListFragment<TestEntity> {
     protected Observable<List<TestEntity>> getDataList(int currentIndex) {
         List<TestEntity> list = new ArrayList<>(currentIndex);
         for (int i = 0; i < currentIndex; i++) {
-            TestEntity testEntity=new TestEntity();
-            testEntity.setSize(currentIndex*i);
+            TestEntity testEntity = new TestEntity();
+            testEntity.setSize(currentIndex * i);
             testEntity.setName(UUID.randomUUID().toString());
             list.add(testEntity);
         }
