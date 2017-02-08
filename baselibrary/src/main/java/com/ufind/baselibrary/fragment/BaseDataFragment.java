@@ -3,6 +3,7 @@ package com.ufind.baselibrary.fragment;
 
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.CallSuper;
 import android.support.annotation.LayoutRes;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -115,6 +116,7 @@ public abstract class BaseDataFragment<T extends Parcelable> extends BaseFragmen
     /**
      * 在 onCreateView代码执行之后的回调方法
      */
+    @CallSuper
     protected void afterCreateView(Bundle bundle) {
         mBGARefreshLayout = (BGARefreshLayout) findViewById(R.id.bga_refresh);
         mBGARefreshLayout.setDelegate(this);
@@ -124,6 +126,8 @@ public abstract class BaseDataFragment<T extends Parcelable> extends BaseFragmen
         FrameLayout frameLayout= (FrameLayout) mBGARefreshLayout.findViewById(R.id.frame_layout);
         frameLayout.addView(View.inflate(getContext(),getLayoutId(),null), ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
+        initViews(bundle);
+
         if (bundle != null && (mData = bundle.getParcelable(INSTANCE_ENTITY)) != null) {
             Logger.d("get data from bundle");
             setData(mData);
@@ -132,6 +136,11 @@ public abstract class BaseDataFragment<T extends Parcelable> extends BaseFragmen
                 beginRefresh();
             }
         }
+    }
+
+    //在创建视图完成之后 在设置数据之前 调用
+    protected void initViews(Bundle bundle){
+
     }
 
     /**
