@@ -51,6 +51,13 @@ public abstract class BaseFragment extends Fragment {
         return mRootView.findViewById(id);
     }
 
+
+    /**
+     * 在创建view完成之后 在设置数据之前调用
+     * @param bundle
+     */
+    protected abstract void initViews(Bundle bundle);
+
     /**
      * 获取 根布局
      */

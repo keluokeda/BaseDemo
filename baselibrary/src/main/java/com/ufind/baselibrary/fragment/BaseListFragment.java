@@ -76,6 +76,12 @@ public abstract class BaseListFragment<T extends Parcelable> extends BaseFragmen
     }
 
 
+    @Override
+    protected void initViews(Bundle bundle){
+
+    }
+
+
     /**
      * 是否在 onCreateView的时候就开始加载数据
      */

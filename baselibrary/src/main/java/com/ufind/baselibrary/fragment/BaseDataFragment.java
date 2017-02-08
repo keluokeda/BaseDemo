@@ -139,6 +139,7 @@ public abstract class BaseDataFragment<T extends Parcelable> extends BaseFragmen
     }
 
     //在创建视图完成之后 在设置数据之前 调用
+    @Override
     protected void initViews(Bundle bundle){
 
     }
