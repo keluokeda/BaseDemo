@@ -56,6 +56,10 @@ public abstract class BaseListFragment<T extends Parcelable> extends BaseFragmen
     protected void afterCreateView(Bundle savedInstanceState) {
 
         initView();
+
+        initViews(savedInstanceState);
+
+
         if (savedInstanceState == null) {
             if (refreshWhenCreate()) {
                 mBgaRefresh.beginRefreshing();
