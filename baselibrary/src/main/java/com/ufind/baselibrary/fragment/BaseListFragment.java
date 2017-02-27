@@ -244,6 +244,8 @@ public abstract class BaseListFragment<T extends Parcelable> extends BaseFragmen
                         showEmptyDataView();
                     }
                     return;
+                }else {
+                    hideEmptyDataView();
                 }
                 currentIndex++;
                 addData(ts);

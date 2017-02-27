@@ -54,6 +54,7 @@ public abstract class BaseFragment extends Fragment {
 
     /**
      * 在创建view完成之后 在设置数据之前调用
+     *
      * @param bundle
      */
     protected abstract void initViews(Bundle bundle);
@@ -91,14 +92,21 @@ public abstract class BaseFragment extends Fragment {
             emptyDataView = getEmptyDataView();
         }
         if (emptyDataView.getParent() != null) {
-            return;
+            emptyDataView.setVisibility(View.VISIBLE);
+        } else {
+            mRootView.addView(emptyDataView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         }
-        mRootView.addView(emptyDataView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+
+    }
+
+
+    protected boolean isEmptyViewShowing() {
+        return emptyDataView != null && (emptyDataView.getVisibility() == View.VISIBLE);
     }
 
     protected void hideEmptyDataView() {
-        if (emptyDataView != null && emptyDataView.getParent() != null) {
-            mRootView.removeView(emptyDataView);
+        if (emptyDataView != null) {
+            emptyDataView.setVisibility(View.GONE);
         }
     }
 
