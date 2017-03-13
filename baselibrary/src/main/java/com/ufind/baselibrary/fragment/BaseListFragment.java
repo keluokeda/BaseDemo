@@ -160,7 +160,7 @@ public abstract class BaseListFragment<T extends Parcelable> extends BaseFragmen
         mBgaRefresh.setRefreshViewHolder(new BGANormalRefreshViewHolder(getActivity().getApplicationContext(), isLoadingMoreEnable()));
 
 
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mRecyclerView.setLayoutManager(getLayoutManager());
         initAdapter();
 
 
@@ -187,6 +187,10 @@ public abstract class BaseListFragment<T extends Parcelable> extends BaseFragmen
         });
 
 
+    }
+
+    protected RecyclerView.LayoutManager getLayoutManager(){
+        return new LinearLayoutManager(getContext());
     }
 
     protected void initAdapter() {
